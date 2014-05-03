@@ -6,7 +6,10 @@ class window.Hand extends Backbone.Collection
 
   hit: ->
     @add(@deck.pop()).last()
-    @trigger 'hit'
+    if @isDealer
+      @trigger 'checkScores'
+    else
+      @trigger 'hit'
 
   stand: ->
     @first().flip()

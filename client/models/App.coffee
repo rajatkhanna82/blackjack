@@ -21,14 +21,31 @@ class window.App extends Backbone.Model
      alert ("you Lose with #{playerScore}. The dealer has #{dealerScore}")
 
   checkScores: ->
-    playerScore = if not@get('playerHand').scores()[1] or @get('playerHand').scores()[1] > 21
-      @get('playerHand').scores()[0]
+    playerScore = if @get('playerHand').scores()[1]
+      @checkAScore('playerHand')
     else
-      @get('playerHand').scores()[1]
+      @get('playerHand').scores()[0]
 
-    dealerScore = @get('dealerHand').scores()
+    dealerScore =  if @get('dealerHand').scores()[1]
+      @checkAScore('dealerHand')
+    else
+      @get('dealerHand').scores()[0]
 
-    if playerScore > dealerScore
-      alert "you win with #{playerScore}. The dealer has #{dealerScore}"
-    else alert "you lose"
+    if dealerScore < 17
+      @get('dealerHand').hit()
+    else
+      if playerScore > dealerScore or dealerScore > 21
+        alert "you win with #{playerScore}. The dealer has #{dealerScore}"
+      else if dealerScore is playerScore
+        alert "its a tie"
+      else
+        alert "you lose with #{playerScore}. The dealer has #{dealerScore}"
 
+    console.log("after Alert")
+
+  checkAScore: (hand) ->
+    score = if @get(hand).scores()[1] > 21
+      @get(hand).scores()[0]
+    else
+      @get(hand).scores()[1]
+    score
