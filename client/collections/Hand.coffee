@@ -6,6 +6,11 @@ class window.Hand extends Backbone.Collection
 
   hit: ->
     @add(@deck.pop()).last()
+    @trigger 'hit'
+
+  stand: ->
+    @first().flip()
+    @trigger 'checkScores'
 
   scores: ->
     # The scores are an array of potential scores.
