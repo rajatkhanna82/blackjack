@@ -6,46 +6,31 @@ class window.App extends Backbone.Model
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
 
-    @get('playerHand').on 'hit', => @checkHitScore()
-    @get('dealerHand').on 'checkScores', => @checkScores()
+    @get('playerHand').on 'all',  @playerEvents, @
+    @get('dealerHand').on 'all',  @dealerEvents, @
 
-  checkHitScore: ->
-    playerScore = if not@get('playerHand').scores()[1] or @get('playerHand').scores()[1] > 21
-      @get('playerHand').scores()[0]
-    else
-      @get('playerHand').scores()[1]
+  reload: ->
+    if @get('playerHand').get 'roundOver'
+      @get('playerHand').set 'roundOver',false
+    # @get('playerHand').newDeal()
+    # @get('dealerHand').newDeal()
+    # @set 'playerHand', @get('deck').dealPlayer()
+    # @set 'dealerHand', @get('deck').dealDealer()
 
-    dealerScore = @get('dealerHand').scores()
+  playerEvents: (event) ->
+    console.log("player event: #{event} ")
+    switch event
+      when 'bust' then @trigger 'dealerWins'
+      when 'stand' then @get('dealerHand').playToWin()
 
-    if playerScore > 21
-     alert ("you Lose with #{playerScore}. The dealer has #{dealerScore}")
+  dealerEvents: (event) ->
+    switch event
+      when 'bust' then @trigger 'playerWins'
+      when 'stand' then @checkScores()
 
   checkScores: ->
-    playerScore = if @get('playerHand').scores()[1]
-      @checkAScore('playerHand')
-    else
-      @get('playerHand').scores()[0]
+    @trigger 'playerWins' if @get('playerHand').maxScore() > @get('dealerHand').maxScore()
+    @trigger 'dealerWins' if @get('playerHand').maxScore() < @get('dealerHand').maxScore()
+    @trigger 'tie' if @get('playerHand').maxScore() == @get('dealerHand').maxScore()
 
-    dealerScore =  if @get('dealerHand').scores()[1]
-      @checkAScore('dealerHand')
-    else
-      @get('dealerHand').scores()[0]
 
-    if dealerScore < 17
-      @get('dealerHand').hit()
-    else
-      if playerScore > dealerScore or dealerScore > 21
-        alert "you win with #{playerScore}. The dealer has #{dealerScore}"
-      else if dealerScore is playerScore
-        alert "its a tie"
-      else
-        alert "you lose with #{playerScore}. The dealer has #{dealerScore}"
-
-    console.log("after Alert")
-
-  checkAScore: (hand) ->
-    score = if @get(hand).scores()[1] > 21
-      @get(hand).scores()[0]
-    else
-      @get(hand).scores()[1]
-    score
