@@ -1,9 +1,20 @@
+body{
+  background-color: green;
+
+}
+.container{
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  
+}
+
 .card {
   float: left;
   border: solid 1px black;
   width: 100px;
   border-radius: 5px;
-  height: 150px;
+  height: 140px;
   margin-right: 20px;
 }
 

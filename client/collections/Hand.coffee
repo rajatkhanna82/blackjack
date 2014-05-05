@@ -5,7 +5,7 @@ class window.Hand extends Backbone.Collection
   initialize: (array, @deck, @isDealer) ->
 
   hit: ->
-    @add(@deck.pop()).last()
+    @add(@deck.pop())
     if @busted()
       @trigger 'bust'
 
@@ -27,6 +27,11 @@ class window.Hand extends Backbone.Collection
   newDeal: ->
     while (not@isEmpty())
       @deck.unshift(@pop())
+    @add([@deck.pop(),@deck.pop()] ) 
+    if @isDealer and @first().get 'revealed'
+      @first().flip()
+      
+
 
   busted: ->
     if @scores()[0] > 21 then true

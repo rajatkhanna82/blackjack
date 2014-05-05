@@ -10,10 +10,8 @@ class window.App extends Backbone.Model
     @get('dealerHand').on 'all',  @dealerEvents, @
 
   reload: ->
-    if @get('playerHand').get 'roundOver'
-      @get('playerHand').set 'roundOver',false
-    # @get('playerHand').newDeal()
-    # @get('dealerHand').newDeal()
+     @get('playerHand').newDeal()
+     @get('dealerHand').newDeal()
     # @set 'playerHand', @get('deck').dealPlayer()
     # @set 'dealerHand', @get('deck').dealDealer()
 
